@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="uk.ac.lancs.sakai.assignmentsubmissionhook.AssignmentSubmissionHook"
+    	class= "uk.ac.lancs.sakai.assignmentsubmissionhook.AssignmentSubmissionHook"
+    	init-method="init">
+    </bean>
+    
+    <bean id="LUSISubmissionJob"
+        class="uk.ac.lancs.sakai.assignmentsubmissionhook.LusiSubmissionQuartzJob"
+        init-method="init">
+    </bean>
+
+    <bean
+        id="org.sakaiproject.api.app.scheduler.JobBeanWrapper.lusiESubmissionQueue"
+        class="org.sakaiproject.component.app.scheduler.jobs.SpringStatefulJobBeanWrapper"
+        singleton="true" init-method="init">
+        <property name="beanId">
+            <value>LUSISubmissionJob</value>
+        </property>
+        <property name="jobName">
+            <value>Process LUSI e-Submission Queue</value>
+        </property>
+        <property name="schedulerManager">
+            <ref bean="org.sakaiproject.api.app.scheduler.SchedulerManager" />
+        </property>
+    </bean>
+
+</beans>
