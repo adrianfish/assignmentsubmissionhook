@@ -37,7 +37,7 @@ public class SubmissionObserver implements Observer {
 	private UserDirectoryService userDirectoryService = null;
 	private SqlService sqlService;
 	
-	private DateFormat iso8061Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'+00:00'");
+	private DateFormat iso8061Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 	
 	public SubmissionObserver() {
 		assignmentService = (AssignmentService) ComponentManager.get(AssignmentService.class);
