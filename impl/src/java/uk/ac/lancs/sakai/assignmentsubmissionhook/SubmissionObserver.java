@@ -40,6 +40,7 @@ public class SubmissionObserver implements Observer {
 	private DateFormat iso8061Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 	
 	public SubmissionObserver() {
+
 		assignmentService = (AssignmentService) ComponentManager.get(AssignmentService.class);
 		securityService = (SecurityService) ComponentManager.get(SecurityService.class);
 		userDirectoryService = (UserDirectoryService) ComponentManager.get(UserDirectoryService.class);
@@ -48,13 +49,13 @@ public class SubmissionObserver implements Observer {
 
 	public void update(Observable o, Object arg) {
 		
-		if(arg instanceof Event) {
+		if (arg instanceof Event) {
 			Event e = (Event) arg;
 			String name = e.getEvent();
-			if(AssignmentConstants.EVENT_SUBMIT_ASSIGNMENT_SUBMISSION.equals(name)) {
+			if (AssignmentConstants.EVENT_SUBMIT_ASSIGNMENT_SUBMISSION.equals(name)) {
 				String reference = e.getResource();
 				String[] parts = reference.split(Entity.SEPARATOR);
-				if(parts.length < 6) {
+				if (parts.length < 6) {
 					logger.warn("Unrecognised reference '" + reference + "'. Ignoring ...");
 					return;
 				}
@@ -77,8 +78,8 @@ public class SubmissionObserver implements Observer {
 					
 					String workYearId = assignment.getProperties().getProperty("workId");
 					
-					if(workYearId == null || workYearId.equals("")) {
-						if(logger.isDebugEnabled()) logger.debug("Not a LUSI provisioned Assignment. Ignoring ...");
+					if (workYearId == null || workYearId.equals("")) {
+						logger.debug("Not a LUSI provisioned Assignment. Ignoring ...");
 						return;
 					}
 					
@@ -87,7 +88,7 @@ public class SubmissionObserver implements Observer {
 					Date sd = new Date(submission.getTimeSubmitted().getTime());
 					String submittedDate = iso8061Format.format(sd);
 					
-					if(logger.isDebugEnabled()) logger.debug("WORK ID: " + workYearId + ". LOGIN: " + login + ".SUBMITTED DATE: " + submittedDate);
+					if (logger.isDebugEnabled()) logger.debug("WORK ID: " + workYearId + ". LOGIN: " + login + ".SUBMITTED DATE: " + submittedDate);
 					
 					String[] tokens = workYearId.split("-");
 					String workId = tokens[0];
@@ -96,22 +97,22 @@ public class SubmissionObserver implements Observer {
 					conn = sqlService.borrowConnection();
 					
 					pst = conn.prepareStatement("INSERT INTO LUSI_ESUBMISSION_JOBS (STUDENTUSERNAME,YEARIDENTITY,WORKIDENTITY,ESUBMISSIONTIME) VALUES(?,?,?,?)");
-					pst.setString(1,login);
-					pst.setString(2,yearId);
-					pst.setString(3,workId);
-					pst.setString(4,submittedDate);
+					pst.setString(1, login);
+					pst.setString(2, yearId);
+					pst.setString(3, workId);
+					pst.setString(4, submittedDate);
 					pst.executeUpdate();
 				} catch (Exception e1) {
 					logger.error("Failed to add esubmission flag to db",e1);
 				} finally {
 					securityService.popAdvisor(advisor);
 					
-					if(pst != null) {
+					if (pst != null) {
 						try {
 							pst.close();
-						} catch(Exception e2) {}
+						} catch (Exception e2) {}
 					}
-					if(conn != null) {
+					if (conn != null) {
 						sqlService.returnConnection(conn);
 					}
 				}
