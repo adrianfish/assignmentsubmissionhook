@@ -10,7 +10,7 @@ public class AssignmentSubmissionHook {
 	
 	public void init() {
 
-		if (logger.isDebugEnabled()) logger.debug("Assignment submission hook init()");
+		logger.debug("Assignment submission hook init()");
 		
 		EventTrackingService eventTrackingService = (EventTrackingService) ComponentManager.get(EventTrackingService.class);
 		
